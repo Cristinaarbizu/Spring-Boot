@@ -1,0 +1,118 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProyectoController.class);
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarProyectos(Model model) {
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "proyectos";
+    }
+
+    @GetMapping("/crear")
+    public String mostrarFormularioCreacion(Model model) {
+        model.addAttribute("proyecto", new Proyecto());
+        model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+        return "crearProyecto";
+    }
+
+    @PostMapping("/crear")
+    public String crearProyecto(@Valid @ModelAttribute Proyecto proyecto, BindingResult result, Model model) {
+        logger.info("Intento de crear proyecto: {}", proyecto);
+
+        if (result.hasErrors()) {
+            logger.warn("Errores de validación: {}", result.getAllErrors());
+            model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+            return "crearProyecto";
+        }
+
+        try {
+            Proyecto proyectoGuardado = proyectoService.guardarProyecto(proyecto);
+            logger.info("Proyecto guardado con ID: {}", proyectoGuardado.getId());
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            logger.error("Error al crear el proyecto: {}", e.getMessage(), e);
+            model.addAttribute("error", "Error al crear el proyecto: " + e.getMessage());
+            model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+            return "crearProyecto";
+        }
+    }
+
+    @GetMapping("/{id}")
+    public String verProyecto(@PathVariable Long id, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "proyectos";
+        }
+        model.addAttribute("proyecto", proyecto);
+        return "verProyecto";
+    }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "proyectos";
+        }
+        model.addAttribute("proyecto", proyecto);
+        model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+        return "editarProyecto";
+    }
+
+    @PostMapping("/{id}/editar")
+    public String actualizarProyecto(@PathVariable Long id, @Valid @ModelAttribute Proyecto proyecto, BindingResult result, Model model) {
+        logger.info("Intento de actualizar proyecto con ID: {}", id);
+
+        if (result.hasErrors()) {
+            logger.warn("Errores de validación al actualizar proyecto con ID: {}", id);
+            model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+            return "editarProyecto";
+        }
+
+        try {
+            proyecto.setId(id);
+            Proyecto proyectoActualizado = proyectoService.guardarProyecto(proyecto);
+            logger.info("Proyecto con ID {} actualizado exitosamente", proyectoActualizado.getId());
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            logger.error("Error al actualizar el proyecto con ID {}: {}", id, e.getMessage(), e);
+            model.addAttribute("error", "Error al actualizar el proyecto: " + e.getMessage());
+            model.addAttribute("estados", Arrays.asList(Proyecto.EstadoProyecto.values())); // Para el desplegable de estados
+            return "editarProyecto";
+        }
+    }
+
+
+    @GetMapping("/{id}/eliminar")
+    public String eliminarProyecto(@PathVariable Long id, Model model) {
+        try {
+            proyectoService.eliminarProyecto(id);
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al eliminar el proyecto: " + e.getMessage());
+            return "proyectos";
+        }
+    }
+}

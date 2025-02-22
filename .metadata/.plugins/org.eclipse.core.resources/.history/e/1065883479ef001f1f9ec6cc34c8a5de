@@ -1,0 +1,43 @@
+package com.example.demo.entities;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Tarea {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id") // Clave foránea en la tabla Tarea
+    private Proyecto proyecto;
+
+    // Getters y setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Proyecto getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(Proyecto proyecto) {
+        this.proyecto = proyecto;
+    }
+}

@@ -1,0 +1,9 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.entities.Tarea;
+import com.example.demo.repositories.ProyectoRepository;
+import com.example.demo.repositories.TareaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;

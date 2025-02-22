@@ -1,0 +1,12 @@
+@Controller
+public class LoginController {
+    @GetMapping("/login")
+    public String mostrarLogin() {
+        return "login";
+    }
+
+    @GetMapping("/")
+    public String redirigirDespuésDeLogin() {
+        return "redirect:/proyectos"; // Redirige a la lista de proyectos
+    }
+}

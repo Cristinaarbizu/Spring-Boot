@@ -1,0 +1,49 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarProyectos(Model model) {
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "proyectos"; // Asegúrate de que "proyectos.html" existe
+    }
+
+    @GetMapping("/nuevo")
+    public String mostrarFormularioCreacion(Model model) {
+        model.addAttribute("proyecto", new Proyecto()); // Enviamos un objeto vacío
+        return "crearProyecto"; // Asegúrate de que "crearProyecto.html" existe
+    }
+
+    @PostMapping
+    public String crearProyecto(@Valid @ModelAttribute Proyecto proyecto, BindingResult result, 
+                                RedirectAttributes redirectAttributes, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("proyecto", proyecto);
+            return "crearProyecto"; // Devuelve al formulario si hay errores
+        }
+
+        try {
+            proyectoService.guardarProyecto(proyecto);
+            redirectAttributes.addFlashAttribute("success", "Proyecto creado con éxito 🎉");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Hubo un problema al guardar el proyecto 😞");
+        }
+
+        return "redirect:/proyectos";
+    }
+}

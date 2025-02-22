@@ -1,0 +1,28 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.entities.Tarea;
+import com.example.demo.services.ProyectoService;
+import com.example.demo.services.TareaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@Controller
+@RequestMapping("/tareas")
+public class TareaController {
+    @Autowired
+    private TareaService tareaService;
+    
+    @GetMapping
+    public String obtenerTareas(Model model) {
+        model.addAttribute("tareas", tareaService.listarTareas());
+        return "tareas";
+    }
+    
+    @PostMapping
+    public String crearTarea(@ModelAttribute Tarea tarea) {
+        tareaService.guardarTarea(tarea);
+        return "redirect:/tareas";
+    }
+}

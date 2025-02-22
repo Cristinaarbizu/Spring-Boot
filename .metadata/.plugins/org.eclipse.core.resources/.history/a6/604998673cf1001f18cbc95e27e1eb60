@@ -1,0 +1,31 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.repositories.ProyectoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProyectoService {
+
+    @Autowired
+    private ProyectoRepository proyectoRepository;
+
+    public List<Proyecto> listarTodos() {
+        return proyectoRepository.findAll();
+    }
+
+    public Proyecto buscarPorId(Long id) {
+        return proyectoRepository.findById(id).orElse(null);
+    }
+
+    public void guardar(Proyecto proyecto) {
+        proyectoRepository.save(proyecto);
+    }
+
+    public void eliminar(Long id) {
+        proyectoRepository.deleteById(id);
+    }
+}

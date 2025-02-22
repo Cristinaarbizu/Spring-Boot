@@ -1,0 +1,3 @@
+public interface TareaRepository extends JpaRepository<Tarea, Long> {
+    List<Tarea> findByProyectoId(Long proyectoId);
+}

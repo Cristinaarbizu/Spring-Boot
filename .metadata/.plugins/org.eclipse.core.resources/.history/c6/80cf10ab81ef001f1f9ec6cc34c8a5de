@@ -1,0 +1,26 @@
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/css/**", "/js/**").permitAll() // Permitir acceso a recursos estáticos
+                .requestMatchers("/", "/proyectos", "/proyectos/nuevo").authenticated() // Permitir ver la lista y formulario
+                .requestMatchers(HttpMethod.POST, "/proyectos").authenticated() // Permitir guardar proyectos
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/proyectos", true)
+                .permitAll())
+            .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
+            .csrf(csrf -> csrf.disable()); // ⚠️ Desactivar CSRF temporalmente para pruebas (No recomendado en producción)
+        return http.build();
+    }
+}

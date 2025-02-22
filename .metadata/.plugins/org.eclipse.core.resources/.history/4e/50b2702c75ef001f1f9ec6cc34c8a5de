@@ -1,0 +1,63 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.repositories.ProyectoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProyectoService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProyectoService.class);
+
+    @Autowired
+    private ProyectoRepository proyectoRepository;
+
+    public List<Proyecto> listarProyectos() {
+        logger.info("Listando todos los proyectos");
+        return proyectoRepository.findAll();
+    }
+
+    @Transactional
+    public Proyecto guardarProyecto(Proyecto proyecto) {
+        logger.info("Intentando guardar proyecto: {}", proyecto);
+        try {
+            Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+            logger.info("Proyecto guardado exitosamente: {}", proyectoGuardado);
+            return proyectoGuardado;
+        } catch (Exception e) {
+            logger.error("Error al guardar el proyecto: {}", e.getMessage());
+            throw new RuntimeException("Error al guardar el proyecto", e);
+        }
+    }
+
+    public Proyecto obtenerProyectoPorId(Long id) {
+        logger.info("Buscando proyecto con id: {}", id);
+        Optional<Proyecto> proyecto = proyectoRepository.findById(id);
+        if (proyecto.isPresent()) {
+            logger.info("Proyecto encontrado: {}", proyecto.get());
+            return proyecto.get();
+        } else {
+            logger.warn("No se encontró proyecto con id: {}", id);
+            return null;
+        }
+    }
+
+    @Transactional
+    public void eliminarProyecto(Long id) {
+        logger.info("Intentando eliminar proyecto con id: {}", id);
+        try {
+            proyectoRepository.deleteById(id);
+            logger.info("Proyecto con id {} eliminado exitosamente", id);
+        } catch (Exception e) {
+            logger.error("Error al eliminar el proyecto con id {}: {}", id, e.getMessage());
+            throw new RuntimeException("Error al eliminar el proyecto", e);
+        }
+    }
+}

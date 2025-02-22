@@ -1,0 +1,48 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.repositorios.ProyectoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProyectoService {
+
+    @Autowired
+    private ProyectoRepository proyectoRepository;
+
+    // Obtener todos los proyectos
+    public List<Proyecto> obtenerTodos() {
+        return proyectoRepository.findAll();
+    }
+
+    // Buscar proyecto por ID
+    public Optional<Proyecto> obtenerPorId(Long id) {
+        return proyectoRepository.findById(id);
+    }
+
+    // Buscar proyectos por nombre
+    public List<Proyecto> buscarPorNombre(String nombre) {
+        return proyectoRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    // Guardar o actualizar un proyecto con validación
+    public Proyecto guardarProyecto(Proyecto proyecto) {
+        if (proyecto.getNombre() == null || proyecto.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del proyecto no puede estar vacío.");
+        }
+        return proyectoRepository.save(proyecto);
+    }
+
+    // Eliminar proyecto por ID
+    public void eliminarProyecto(Long id) {
+        if (proyectoRepository.existsById(id)) {
+            proyectoRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("El proyecto no existe.");
+        }
+    }
+}

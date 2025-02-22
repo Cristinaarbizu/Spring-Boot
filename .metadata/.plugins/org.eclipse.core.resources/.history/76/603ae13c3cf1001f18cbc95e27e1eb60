@@ -1,0 +1,21 @@
+package com.gestionproyectos.entities;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "tarea")
+public class Tarea {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String titulo;
+    private String descripcion;
+    private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id", nullable = false)
+    private Proyecto proyecto;
+
+    // Getters y Setters
+}

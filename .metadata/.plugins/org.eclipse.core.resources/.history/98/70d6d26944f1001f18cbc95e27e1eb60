@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+    <div th:replace="layout :: nav"></div>
+    <div class="container mt-4">
+        <h2>Proyectos</h2>
+        <a href="/proyectos/nuevo" class="btn btn-primary mb-3">Nuevo Proyecto</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proyecto : ${proyectos}">
+                    <td th:text="${proyecto.id}"></td>
+                    <td th:text="${proyecto.nombre}"></td>
+                    <td th:text="${proyecto.descripcion}"></td>
+                    <td th:text="${proyecto.estado}"></td>
+                    <td th:text="${proyecto.fechaInicio}"></td>
+                    <td>
+						<a th:href="@{/proyectos/editar(id=${proyecto.id})}" class="btn btn-sm btn-warning">Editar</a>
+						<a th:href="@{/proyectos/eliminar(id=${proyecto.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este proyecto?')">Eliminar</a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

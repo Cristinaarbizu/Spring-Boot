@@ -1,0 +1,30 @@
+<!-- proyectos.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Proyectos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h2>Lista de Proyectos</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha Inicio</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="proyecto : ${proyectos}">
+                <td th:text="${proyecto.nombre}"></td>
+                <td th:text="${proyecto.descripcion}"></td>
+                <td th:text="${proyecto.fechaInicio}"></td>
+                <td th:text="${proyecto.estado}"></td>
+            </tr>
+        </tbody>
+    </table>
+	<a href="/proyectos/nuevo" class="btn btn-success">Nuevo Proyecto</a>
+</body>
+</html>

@@ -1,0 +1,13 @@
+@Entity
+public class Tarea {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String descripcion;
+    
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id")
+    private Proyecto proyecto;
+
+    // Getters y Setters
+}

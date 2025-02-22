@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Tareas</title>
+    <style th:inline="css">
+        .task-container {
+            margin-top: 20px;
+        }
+
+        .task-table {
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .task-table thead tr {
+            background-color: #343a40; /* Fondo oscuro para la cabecera */
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .task-table th,
+        .task-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .task-table tbody tr {
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+        .task-table tbody tr:nth-of-type(even) {
+            background-color: #f8f9fa;
+        }
+
+        .task-table tbody tr:last-of-type {
+            border-bottom: 2px solid #343a40; /* Borde inferior oscuro */
+        }
+
+        .action-buttons a {
+            margin-right: 5px;
+        }
+
+        .btn-edit {
+            background-color: #ffc107; /* Amarillo */
+            color: #000; /* Texto negro */
+            border: none;
+        }
+
+        .btn-delete {
+            background-color: #dc3545; /* Rojo */
+            color: #fff; /* Texto blanco */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="task-container">
+            <h2 class="mb-4">Tareas</h2>
+            <a href="/tareas/nuevo" class="btn btn-primary mb-3">Nueva Tarea</a>
+            <div class="table-responsive">
+                <table class="task-table table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Proyecto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tarea : ${tareas}">
+                            <td th:text="${tarea.id}"></td>
+                            <td th:text="${tarea.titulo}"></td>
+                            <td th:text="${tarea.descripcion}"></td>
+                            <td th:text="${tarea.estado}"></td>
+                            <td th:text="${tarea.proyecto}"></td>
+                            <td class="action-buttons">
+                                <a th:href="@{/tareas/editar(id=${tarea.id})}" class="btn btn-sm btn-edit">Editar</a>
+                                <a th:href="@{/tareas/eliminar(id=${tarea.id})}" class="btn btn-sm btn-delete" onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

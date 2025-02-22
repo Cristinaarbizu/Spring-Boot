@@ -1,0 +1,75 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    // ✅ LISTAR PROYECTOS
+    @GetMapping
+    public String listarProyectos(Model model) {
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "proyectos";
+    }
+
+    // ✅ FORMULARIO PARA CREAR UN PROYECTO
+    @GetMapping("/nuevo")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("proyecto", new Proyecto());
+        return "crearProyecto";
+    }
+
+    // ✅ GUARDAR PROYECTO
+    @PostMapping("/guardar")
+    public String guardarProyecto(@ModelAttribute Proyecto proyecto) {
+        proyectoService.guardarProyecto(proyecto);
+        return "redirect:/proyectos";
+    }
+
+    // ✅ FORMULARIO PARA EDITAR PROYECTO
+    @GetMapping("/editar/{id}")
+    public String editarProyecto(@PathVariable("id") Long id, Model model) {
+        Optional<Proyecto> proyecto = Optional.ofNullable(proyectoService.obtenerPorId(id));
+
+        if (proyecto.isPresent()) {
+            model.addAttribute("proyecto", proyecto.get());
+            return "editarProyecto";
+        } else {
+            return "redirect:/proyectos?error=notfound";
+        }
+    }
+
+    // ✅ ACTUALIZAR PROYECTO
+    @PostMapping("/actualizar/{id}")
+    public String actualizarProyecto(@PathVariable("id") Long id, @ModelAttribute Proyecto proyecto) {
+        Proyecto existente = proyectoService.obtenerPorId(id);
+        if (existente != null) {
+            existente.setNombre(proyecto.getNombre());
+            existente.setDescripcion(proyecto.getDescripcion());
+            proyectoService.guardarProyecto(existente);
+            return "redirect:/proyectos?success=updated";
+        }
+        return "redirect:/proyectos?error=notfound";
+    }
+
+    // ✅ ELIMINAR PROYECTO
+    @GetMapping("/eliminar/{id}")
+    public String eliminarProyecto(@PathVariable("id") Long id) {
+        if (proyectoService.obtenerPorId(id) != null) {
+            proyectoService.eliminarProyecto(id);
+            return "redirect:/proyectos?success=deleted";
+        }
+        return "redirect:/proyectos?error=notfound";
+    }
+}

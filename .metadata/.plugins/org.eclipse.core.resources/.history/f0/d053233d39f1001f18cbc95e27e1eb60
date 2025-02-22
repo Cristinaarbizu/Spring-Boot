@@ -1,0 +1,20 @@
+package com.example.demo.entities;
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Proyecto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nombre;
+    private String descripcion;
+    private String estado;
+
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
+    private List<Tarea> tareas;
+
+    // Getters y Setters
+}

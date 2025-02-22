@@ -1,0 +1,25 @@
+<div th:replace="~{base :: content}">
+    <h2>Lista de Tareas</h2>
+    <a class="btn btn-success mb-3" th:href="@{/tareas/nueva}">Crear Tarea</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Proyecto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tarea : ${tareas}">
+                <td th:text="${tarea.titulo}"></td>
+                <td th:text="${tarea.estado}"></td>
+                <td th:text="${tarea.proyecto.nombre}"></td>
+                <td>
+                    <a class="btn btn-primary btn-sm" th:href="@{/tareas/editar/{id}(id=${tarea.id})}">Editar</a>
+                    <a class="btn btn-danger btn-sm" th:href="@{/tareas/eliminar/{id}(id=${tarea.id})}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Proyectos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Proyectos</h2>
+        <a th:href="@{/proyectos/crear}" class="btn btn-primary mb-3">Crear Nuevo Proyecto</a>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proyecto : ${proyectos}">
+                    <td th:text="${proyecto.id}"></td>
+                    <td th:text="${proyecto.nombre}"></td>
+                    <td th:text="${proyecto.descripcion}"></td>
+                    <td th:text="${#dates.format(proyecto.fechaInicio, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${proyecto.estado}"></td>
+                    <td>
+                        <a th:href="@{/proyectos/{id}(id=${proyecto.id})}" class="btn btn-info btn-sm">Ver</a>
+                        <a th:href="@{/proyectos/{id}/editar(id=${proyecto.id})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/proyectos/{id}/eliminar(id=${proyecto.id})}" class="btn btn-danger btn-sm" 
+                           onclick="return confirm('¿Estás seguro de que quieres eliminar este proyecto?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div th:if="${proyectos.empty}">
+            <p>No hay proyectos disponibles.</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

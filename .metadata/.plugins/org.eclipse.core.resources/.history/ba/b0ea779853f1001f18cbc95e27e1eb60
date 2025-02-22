@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Proyectos</title>
+    <style th:inline="css">
+        .project-container {
+            margin-top: 20px;
+        }
+
+        .project-table {
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .project-table thead tr {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .project-table th,
+        .project-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .project-table tbody tr {
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+        .project-table tbody tr:nth-of-type(even) {
+            background-color: #f8f9fa;
+        }
+
+        .project-table tbody tr:last-of-type {
+            border-bottom: 2px solid #007bff;
+        }
+
+        .action-buttons a {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="project-container">
+            <h2 class="mb-4">Proyectos</h2>
+            <div th:if="${isAdmin}" class="mb-3">
+                <a href="/proyectos/reporte" class="btn btn-info">Ver Reporte de Proyectos</a>
+            </div>
+            <a href="/proyectos/nuevo" class="btn btn-primary mb-3">Nuevo Proyecto</a>
+            <div class="table-responsive">
+                <table class="project-table table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="proyecto : ${proyectos}">
+                            <td th:text="${proyecto.id}"></td>
+                            <td th:text="${proyecto.nombre}"></td>
+                            <td th:text="${proyecto.descripcion}"></td>
+                            <td th:text="${proyecto.estado}"></td>
+                            <td th:text="${proyecto.fechaInicio}"></td>
+                            <td class="action-buttons">
+                                <a th:href="@{/proyectos/editar(id=${proyecto.id})}" class="btn btn-sm btn-warning">Editar</a>
+                                <a th:href="@{/proyectos/eliminar(id=${proyecto.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este proyecto?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

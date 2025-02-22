@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Tarea</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Crear Tarea para el Proyecto: <span th:text="${proyecto.nombre}"></span></h2>
+    <form th:action="@{/tareas/crear}" th:object="${tarea}" method="post">
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <input type="text" class="form-control" id="descripcion" th:field="*{descripcion}" required>
+        </div>
+        <!-- Campo oculto para el ID del proyecto -->
+        <input type="hidden" th:value="${proyecto.id}" name="proyectoId"/>
+
+        <button type="submit" class="btn btn-primary">Crear Tarea</button>
+        <a th:href="@{/proyectos/{id}(id=${proyecto.id})}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.TareaService;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/tareas")
+public class TareaController {
+
+    @Autowired
+    private TareaService tareaService;
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping("/crear/{proyectoId}")
+    public String mostrarFormularioCreacion(@PathVariable Long proyectoId, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(proyectoId);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "redirect:/proyectos"; // Redirige a la lista de proyectos si no se encuentra el proyecto
+        }
+        Tarea tarea = new Tarea();
+        tarea.setProyecto(proyecto); // Asocia la tarea al proyecto
+        model.addAttribute("tarea", tarea);
+        model.addAttribute("proyecto", proyecto); // Pasa el proyecto a la vista
+        return "crearTarea";
+    }
+
+
+    @PostMapping("/crear")
+    public String crearTarea(@ModelAttribute Tarea tarea, @RequestParam("proyectoId") Long proyectoId) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(proyectoId);
+        tarea.setProyecto(proyecto);
+        tareaService.guardarTarea(tarea);
+        return "redirect:/proyectos/" + proyectoId; // Redirige a la vista del proyecto
+    }
+
+
+    @GetMapping("/proyecto/{proyectoId}")
+    public String listarTareasPorProyecto(@PathVariable Long proyectoId, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(proyectoId);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "redirect:/proyectos";
+        }
+        model.addAttribute("proyecto", proyecto);
+        model.addAttribute("tareas", proyecto.getTareas()); 
+        return "verProyecto"; 
+    }
+}

@@ -1,0 +1,93 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarProyectos(Model model) {
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "proyectos";
+    }
+
+    @GetMapping("/crear")
+    public String mostrarFormularioCreacion(Model model) {
+        model.addAttribute("proyecto", new Proyecto());
+        return "crearProyecto";
+    }
+
+    @PostMapping("/crear")
+    public String crearProyecto(@Valid @ModelAttribute Proyecto proyecto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "crearProyecto";
+        }
+        try {
+            proyectoService.guardarProyecto(proyecto);
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al crear el proyecto: " + e.getMessage());
+            return "crearProyecto";
+        }
+    }
+
+    @GetMapping("/{id}")
+    public String verProyecto(@PathVariable Long id, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "proyectos";
+        }
+        model.addAttribute("proyecto", proyecto);
+        return "verProyecto";
+    }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
+        if (proyecto == null) {
+            model.addAttribute("error", "Proyecto no encontrado");
+            return "proyectos";
+        }
+        model.addAttribute("proyecto", proyecto);
+        return "editarProyecto";
+    }
+
+    @PostMapping("/{id}/editar")
+    public String actualizarProyecto(@PathVariable Long id, @Valid @ModelAttribute Proyecto proyecto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "editarProyecto";
+        }
+        try {
+            proyecto.setId(id);
+            proyectoService.guardarProyecto(proyecto);
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al actualizar el proyecto: " + e.getMessage());
+            return "editarProyecto";
+        }
+    }
+
+    @GetMapping("/{id}/eliminar")
+    public String eliminarProyecto(@PathVariable Long id, Model model) {
+        try {
+            proyectoService.eliminarProyecto(id);
+            return "redirect:/proyectos";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al eliminar el proyecto: " + e.getMessage());
+            return "proyectos";
+        }
+    }
+}

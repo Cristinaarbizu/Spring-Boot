@@ -1,0 +1,78 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.TareaService;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/tareas")
+public class TareaController {
+
+    @Autowired
+    private TareaService tareaService;
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarTareas(Model model) {
+        model.addAttribute("tareas", tareaService.listarTareas());
+        return "tareas"; // Asegúrate de tener "tareas.html"
+    }
+
+    @GetMapping("/proyecto/{proyectoId}")
+    public String listarTareasPorProyecto(@PathVariable Long proyectoId, Model model) {
+        Optional<Proyecto> proyecto = Optional.ofNullable(proyectoService.obtenerProyectoPorId(proyectoId));
+
+        if (proyecto.isPresent()) {
+            model.addAttribute("tareas", tareaService.listarTareasPorProyecto(proyectoId));
+            model.addAttribute("proyectoId", proyectoId);
+            return "tareas"; 
+        } else {
+            return "redirect:/proyectos"; // Evita mostrar un error si el proyecto no existe
+        }
+    }
+
+    @GetMapping("/nuevo/{proyectoId}")
+    public String mostrarFormularioCreacion(@PathVariable Long proyectoId, Model model) {
+        Optional<Proyecto> proyecto = Optional.ofNullable(proyectoService.obtenerProyectoPorId(proyectoId));
+        
+        if (proyecto.isPresent()) {
+            Tarea tarea = new Tarea();
+            tarea.setProyecto(proyecto.get()); 
+            model.addAttribute("tarea", tarea);
+            model.addAttribute("proyectoId", proyectoId);
+            return "crearTarea"; // Asegúrate de tener "crearTarea.html"
+        } else {
+            return "redirect:/proyectos";
+        }
+    }
+
+    @PostMapping("/guardar")
+    public String crearTarea(@ModelAttribute Tarea tarea) {
+        if (tarea.getProyecto() == null || tarea.getProyecto().getId() == null) {
+            return "redirect:/proyectos"; // Evita errores si la tarea no tiene proyecto
+        }
+        tareaService.guardarTarea(tarea);
+        return "redirect:/tareas/proyecto/" + tarea.getProyecto().getId();
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarTarea(@PathVariable Long id) {
+        Optional<Tarea> tarea = tareaService.obtenerTarea(id);
+
+        if (tarea.isPresent()) {
+            Long proyectoId = tarea.get().getProyecto().getId();
+            tareaService.eliminarTarea(id);
+            return "redirect:/tareas/proyecto/" + proyectoId;
+        }
+        return "redirect:/tareas";
+    }
+}

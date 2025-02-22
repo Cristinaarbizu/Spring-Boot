@@ -1,0 +1,43 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarProyectos(Model model) {
+        List<Proyecto> proyectos = proyectoService.listarTodos();
+        model.addAttribute("proyectos", proyectos);
+        return "proyectos";
+    }
+
+    @GetMapping("/nuevo")
+    public String mostrarFormularioNuevo(Model model) {
+        model.addAttribute("proyecto", new Proyecto());
+        return "crearProyecto";
+    }
+
+    @PostMapping("/guardar")
+    public String guardarProyecto(@ModelAttribute Proyecto proyecto) {
+        proyectoService.guardar(proyecto);
+        return "redirect:/proyectos";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarProyecto(@PathVariable Long id) {
+        proyectoService.eliminar(id);
+        return "redirect:/proyectos";
+    }
+}

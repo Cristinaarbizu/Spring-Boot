@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Proyecto</title>
+</head>
+<body>
+    <h1 th:text="${proyecto.id == null ? 'Crear Proyecto' : 'Editar Proyecto'}"></h1>
+    <form th:action="${proyecto.id == null ? '/proyectos/crear' : '/proyectos/' + proyecto.id + '/editar'}" 
+          th:object="${proyecto}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" required>
+        </div>
+        <div>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" th:field="*{descripcion}"></textarea>
+        </div>
+        <div>
+            <label for="fechaInicio">Fecha de Inicio:</label>
+            <input type="date" id="fechaInicio" th:field="*{fechaInicio}" required>
+        </div>
+        <div>
+            <label for="estado">Estado:</label>
+            <select id="estado" th:field="*{estado}">
+                <option th:each="estadoOpt : ${T(com.example.demo.entities.Proyecto.EstadoProyecto).values()}"
+                        th:value="${estadoOpt}" th:text="${estadoOpt}"></option>
+            </select>
+        </div>
+        <button type="submit">Guardar</button>
+    </form>
+    <a href="/proyectos">Volver a la lista</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+package com.example.demo.entities;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
+@Entity
+
+public class Tarea {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "El título no puede estar vacío")
+    private String titulo;
+
+    private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id", nullable = false)
+    private Proyecto proyecto;
+}

@@ -1,0 +1,51 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.repositorios.TareaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TareaService {
+
+    @Autowired
+    private TareaRepository tareaRepository;
+
+    // Obtener todas las tareas
+    public List<Tarea> obtenerTodas() {
+        return tareaRepository.findAll();
+    }
+
+    // Obtener tarea por ID
+    public Optional<Tarea> obtenerPorId(Long id) {
+        return tareaRepository.findById(id);
+    }
+
+    // Filtrar tareas por estado
+    public List<Tarea> buscarPorEstado(String estado) {
+        return tareaRepository.findByEstado(estado);
+    }
+
+    // Guardar o actualizar tarea con validación
+    public Tarea guardarTarea(Tarea tarea) {
+        if (tarea.getTitulo() == null || tarea.getTitulo().isEmpty()) {
+            throw new IllegalArgumentException("El título de la tarea no puede estar vacío.");
+        }
+        if (tarea.getEstado() == null || tarea.getEstado().isEmpty()) {
+            throw new IllegalArgumentException("El estado de la tarea no puede estar vacío.");
+        }
+        return tareaRepository.save(tarea);
+    }
+
+    // Eliminar tarea por ID
+    public void eliminarTarea(Long id) {
+        if (tareaRepository.existsById(id)) {
+            tareaRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("La tarea no existe.");
+        }
+    }
+}

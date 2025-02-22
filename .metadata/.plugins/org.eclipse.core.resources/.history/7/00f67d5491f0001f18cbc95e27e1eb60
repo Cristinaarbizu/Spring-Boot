@@ -1,0 +1,55 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public String listarProyectos(Model model) {
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "proyectos"; // Asegúrate de que tienes "proyectos.html"
+    }
+
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        Optional<Proyecto> proyectoOpt = Optional.ofNullable(proyectoService.obtenerProyectoPorId(id));
+
+        if (proyectoOpt.isPresent()) {
+            model.addAttribute("proyecto", proyectoOpt.get());
+            return "editarProyecto"; // Asegúrate de tener "editarProyecto.html"
+        } else {
+            return "redirect:/proyectos";
+        }
+    }
+
+    @PostMapping("/actualizar")
+    public String actualizarProyecto(@ModelAttribute Proyecto proyecto) {
+        if (proyecto.getId() == null) {
+            return "redirect:/proyectos";
+        }
+        proyectoService.guardarProyecto(proyecto);
+        return "redirect:/proyectos";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarProyecto(@PathVariable Long id) {
+        Optional<Proyecto> proyectoOpt = Optional.ofNullable(proyectoService.obtenerProyectoPorId(id));
+
+        if (proyectoOpt.isPresent()) {
+            proyectoService.eliminarProyecto(id);
+        }
+        return "redirect:/proyectos";
+    }
+}

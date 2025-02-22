@@ -1,0 +1,61 @@
+package com.example.demo.entities;
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Proyecto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+    private String fechaInicio;
+
+    // Relación One-to-Many con Tarea
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarea> tareas;
+
+    // Constructor vacío
+    public Proyecto() {}
+
+    // Constructor con parámetros
+    public Proyecto(String nombre, String fechaInicio) {
+        this.nombre = nombre;
+        this.fechaInicio = fechaInicio;
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<Tarea> tareas) {
+        this.tareas = tareas;
+    }
+}

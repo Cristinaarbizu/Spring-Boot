@@ -1,0 +1,64 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Usuario;
+import com.example.demo.repositories.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class UsuarioService implements UserDetailsService {
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public Usuario registrarUsuario(String username, String password, boolean isAdmin) {
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setAdmin(isAdmin);
+        return usuarioRepository.save(usuario);
+    }
+
+    public boolean isAdmin(String username) {
+        return usuarioRepository.findByUsername(username)
+                .map(Usuario::isAdmin)
+                .orElse(false);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if (usuario.isAdmin()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                usuario.getUsername(),
+                usuario.getPassword(),
+                authorities
+        );
+    }
+
+    @PostConstruct
+    public void init() {
+        if (usuarioRepository.findByUsername("admin").isEmpty()) {
+            registrarUsuario("admin", "adminpassword", true);
+        }
+    }
+}

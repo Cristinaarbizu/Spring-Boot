@@ -1,0 +1,31 @@
+package com.example.demo.services;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.repositories.TareaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class TareaService {
+
+    @Autowired
+    private TareaRepository tareaRepository;
+
+    public List<Tarea> listarTodas() {
+        return tareaRepository.findAll();
+    }
+
+    public Tarea buscarPorId(Long id) {
+        return tareaRepository.findById(id).orElse(null);
+    }
+
+    public void guardar(Tarea tarea) {
+        tareaRepository.save(tarea);
+    }
+
+    public void eliminar(Long id) {
+        tareaRepository.deleteById(id);
+    }
+}

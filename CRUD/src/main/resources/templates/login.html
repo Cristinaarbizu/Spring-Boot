@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Iniciar Sesión</title>
+    <style th:inline="css">
+        body {
+            background: linear-gradient(120deg, #2980b9, #8e44ad);
+            height: 100vh;
+            overflow: hidden;
+        }
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .login-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .login-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+        .login-form {
+            padding: 30px;
+        }
+        .form-input {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .form-input input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-bottom: 2px solid #d9d9d9;
+            padding-left: 30px;
+            box-sizing: border-box;
+            transition: .3s ease;
+        }
+        .form-input input:focus {
+            border-bottom-color: #8e44ad;
+            outline: none;
+        }
+        .form-input i {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            color: #ccc;
+            transition: .3s ease;
+        }
+        .form-input input:focus + i {
+            color: #8e44ad;
+        }
+        .btn-login {
+            width: 100%;
+            background: #8e44ad;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: .3s ease;
+        }
+        .btn-login:hover {
+            background: #732d91;
+        }
+        .login-footer {
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Iniciar Sesión</h2>
+            </div>
+            <form th:action="@{/login}" method="post" class="login-form">
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    Usuario o contraseña incorrectos.
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                    Has cerrado sesión exitosamente.
+                </div>
+                <div class="form-input">
+                    <input type="text" id="username" name="username" required autofocus placeholder="Usuario">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="form-input">
+                    <input type="password" id="password" name="password" required placeholder="Contraseña">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                <div class="login-footer">
+                    <a th:href="@{/registro}">¿No tienes una cuenta? Regístrate</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

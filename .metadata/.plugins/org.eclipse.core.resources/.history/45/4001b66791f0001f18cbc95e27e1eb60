@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Proyecto</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Asegúrate de tener estilos -->
+</head>
+<body>
+    <h1>Editar Proyecto</h1>
+    <form action="/proyectos/actualizar" method="post">
+        <input type="hidden" name="id" value="${proyecto.id}">
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="${proyecto.nombre}" required>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion">${proyecto.descripcion}</textarea>
+
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="/proyectos">Volver</a>
+</body>
+</html>

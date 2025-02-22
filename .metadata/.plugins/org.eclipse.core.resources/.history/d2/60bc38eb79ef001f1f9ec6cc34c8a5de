@@ -1,0 +1,59 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.services.TareaService;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
+
+
+@Controller
+@RequestMapping("/tareas")
+public class TareaController {
+
+    @Autowired
+    private TareaService tareaService;
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping("/crear/{proyectoId}")
+    public String mostrarFormularioCreacion(@PathVariable Long proyectoId, Model model) {
+        Tarea tarea = new Tarea();
+        proyectoService.obtenerProyectoPorId(proyectoId).ifPresent(tarea::setProyecto);
+        model.addAttribute("tarea", tarea);
+        return "tareas/formulario";
+    }
+
+    @PostMapping("/crear")
+    public String crearTarea(@ModelAttribute Tarea tarea) {
+        tareaService.guardarTarea(tarea);
+        return "redirect:/proyectos/" + tarea.getProyecto().getId();
+    }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        tareaService.obtenerTareaPorId(id).ifPresent(tarea -> model.addAttribute("tarea", tarea));
+        return "tareas/formulario";
+    }
+
+    @PostMapping("/{id}/editar")
+    public String actualizarTarea(@PathVariable Long id, @ModelAttribute Tarea tarea) {
+        tarea.setId(id);
+        tareaService.guardarTarea(tarea);
+        return "redirect:/proyectos/" + tarea.getProyecto().getId();
+    }
+
+    @GetMapping("/{id}/eliminar")
+    public String eliminarTarea(@PathVariable Long id) {
+        tareaService.obtenerTareaPorId(id).ifPresent(tarea -> {
+            Long proyectoId = tarea.getProyecto().getId();
+            tareaService.eliminarTarea(id);
+            return "redirect:/proyectos/" + proyectoId;
+        });
+        return "redirect:/proyectos";
+    }
+}

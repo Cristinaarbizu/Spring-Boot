@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container h-100">
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h3 class="text-center font-weight-light my-2">Iniciar Sesión</h3>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/login}" method="post">
+                                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                    Usuario o contraseña incorrectos.
+                                </div>
+                                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                                    Has cerrado sesión exitosamente.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Usuario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        <input type="text" id="username" name="username" class="form-control" required autofocus>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                                        <input type="password" id="password" name="password" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                    <a class="small text-muted" href="/registro">¿No tienes una cuenta? Regístrate</a>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center py-3">
+                            <div class="small text-muted">
+                                &copy; Gestor de Proyectos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

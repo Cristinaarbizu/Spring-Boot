@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+    </tr>
+    <tr th:each="proyecto : ${proyectos}">
+        <td th:text="${proyecto.id}"></td>
+        <td th:text="${proyecto.nombre}"></td>
+        <td th:text="${proyecto.descripcion}"></td>
+        <td>
+            <a th:href="@{/proyectos/editar/{id}(id=${proyecto.id})}">✏ Editar</a>
+            <a th:href="@{/proyectos/eliminar/{id}(id=${proyecto.id})}" onclick="return confirm('¿Eliminar proyecto?')">❌ Eliminar</a>
+        </td>
+    </tr>
+</table>
+<a href="/proyectos/nuevo">➕ Nuevo Proyecto</a>

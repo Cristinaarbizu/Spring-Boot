@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ver Proyecto</title>
+</head>
+<body>
+    <h1 th:text="${proyecto.nombre}"></h1>
+    <p><strong>Descripción:</strong> <span th:text="${proyecto.descripcion}"></span></p>
+    <p><strong>Fecha de Inicio:</strong> <span th:text="${#dates.format(proyecto.fechaInicio, 'dd-MM-yyyy')}"></span></p>
+    <p><strong>Estado:</strong> <span th:text="${proyecto.estado}"></span></p>
+
+    <h2>Tareas</h2>
+    <a th:href="@{/tareas/crear/{proyectoId}(proyectoId=${proyecto.id})}">Añadir Tarea</a>
+    <table>
+        <tr>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+        <tr th:each="tarea : ${proyecto.tareas}">
+            <td th:text="${tarea.descripcion}"></td>
+            <td>

@@ -1,0 +1,62 @@
+package com.example.demo.controllers;
+
+import com.example.demo.entities.Tarea;
+import com.example.demo.services.TareaService;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/tareas")
+public class TareaController {
+
+    @Autowired
+    private TareaService tareaService;
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping("/crear")
+    public String mostrarFormularioCreacion(Model model) {
+        model.addAttribute("tarea", new Tarea());
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "crearTarea";
+    }
+
+    @PostMapping("/crear")
+    public String crearTarea(@ModelAttribute Tarea tarea) {
+        tareaService.guardarTarea(tarea);
+        return "redirect:/proyectos/" + tarea.getProyecto().getId();
+    }
+
+    @GetMapping("/{id}")
+    public String verTarea(@PathVariable Long id, Model model) {
+        Tarea tarea = tareaService.obtenerTareaPorId(id);
+        model.addAttribute("tarea", tarea);
+        return "verTarea";
+    }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        Tarea tarea = tareaService.obtenerTareaPorId(id);
+        model.addAttribute("tarea", tarea);
+        model.addAttribute("proyectos", proyectoService.listarProyectos());
+        return "editarTarea";
+    }
+
+    @PostMapping("/{id}/editar")
+    public String actualizarTarea(@PathVariable Long id, @ModelAttribute Tarea tarea) {
+        tareaService.guardarTarea(tarea);
+        return "redirect:/proyectos/" + tarea.getProyecto().getId();
+    }
+
+    @GetMapping("/{id}/eliminar")
+    public String eliminarTarea(@PathVariable Long id) {
+        Tarea tarea = tareaService.obtenerTareaPorId(id);
+        Long proyectoId = tarea.getProyecto().getId();
+        tareaService.eliminarTarea(id);
+        return "redirect:/proyectos/" + proyectoId;
+    }
+}

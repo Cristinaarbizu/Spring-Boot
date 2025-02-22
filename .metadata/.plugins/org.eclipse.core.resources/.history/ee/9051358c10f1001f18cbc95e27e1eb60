@@ -1,0 +1,43 @@
+package com.example.demo.controller;
+
+import com.example.demo.entities.Proyecto;
+import com.example.demo.services.ProyectoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/proyectos")
+public class ProyectoController {
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @GetMapping
+    public List<Proyecto> obtenerTodos() {
+        return proyectoService.obtenerTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Proyecto> obtenerPorId(@PathVariable Long id) {
+        return proyectoService.obtenerPorId(id);
+    }
+
+    @PostMapping
+    public Proyecto crearProyecto(@RequestBody Proyecto proyecto) {
+        return proyectoService.guardarProyecto(proyecto);
+    }
+
+    @PutMapping("/{id}")
+    public Proyecto actualizarProyecto(@PathVariable Long id, @RequestBody Proyecto proyecto) {
+        proyecto.setId(id);
+        return proyectoService.guardarProyecto(proyecto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminarProyecto(@PathVariable Long id) {
+        proyectoService.eliminarProyecto(id);
+    }
+}

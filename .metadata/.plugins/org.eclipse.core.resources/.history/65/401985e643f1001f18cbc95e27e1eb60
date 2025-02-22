@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+    <div th:replace="layout :: nav"></div>
+    <div class="container mt-4">
+        <h2>Tareas</h2>
+        <a href="/tareas/nuevo" class="btn btn-primary mb-3">Nueva Tarea</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Proyecto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tarea : ${tareas}">
+                    <td th:text="${tarea.id}"></td>
+                    <td th:text="${tarea.titulo}"></td>
+                    <td th:text="${tarea.descripcion}"></td>
+                    <td th:text="${tarea.estado}"></td>
+                    <td th:text="${tarea.proyecto.nombre}"></td>
+                    <td>
+                        <a th:href="@{/tareas/editar/{id}(id=${tarea.id})}" class="btn btn-sm btn-warning">Editar</a>
+                        <a th:href="@{/tareas/eliminar/{id}(id=${tarea.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
