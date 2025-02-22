@@ -14,12 +14,12 @@
             margin: 5px;
             padding: 20px;
             background-color: #fff;
-            height: 150px; 
+            height: 150px; /* Ajusta la altura según tus necesidades */
             border-radius: 5px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center; 
+            justify-content: center; /* Centra verticalmente */
+            align-items: center; /* Centra horizontalmente */
             text-align: center;
         }
         
@@ -29,7 +29,7 @@
         }
         
         .card-counter .count-numbers {
-            font-size: 2em; 
+            font-size: 2em; /* Ajusta el tamaño del número */
         }
         
         .card-counter .count-name {
